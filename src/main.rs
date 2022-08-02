@@ -1,40 +1,33 @@
+pub mod components;
+
+use components::game::Game;
+use components::grid::GridProps;
 use yew::prelude::*;
 
-enum Msg {
-    AddOne,
-}
+enum Msg {}
 
-struct Model {
-    value: i64,
-}
+struct Model {}
 
 impl Component for Model {
     type Message = Msg;
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self { value: 0 }
+        Self {}
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::AddOne => {
-                self.value += 2;
-                // the value has changed so we need to
-                // re-render for it to appear on the page
-                true
-            }
-        }
+        match msg {}
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        // This gives us a component's "`Scope`" which allows us to send messages, etc to the component.
-        let link = ctx.link();
+    fn view(&self, _ctx: &Context<Self>) -> Html {
+        let grid_props = GridProps {
+            width: 120,
+            height: 80,
+        };
+
         html! {
-            <div>
-                <button onclick={link.callback(|_| Msg::AddOne)}>{ "+2" }</button>
-                <p>{ self.value }</p>
-            </div>
+            <Game started={false} grid={grid_props} />
         }
     }
 }
