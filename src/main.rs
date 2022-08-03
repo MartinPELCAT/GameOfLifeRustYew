@@ -1,37 +1,60 @@
 pub mod components;
 
-use components::game::Game;
-use components::grid::GridProps;
+use components::game::{Game, GridSize};
+
 use yew::prelude::*;
 
-enum Msg {}
+enum Msg {
+    StartGame,
+}
 
-struct Model {}
+struct Model {
+    started: bool,
+}
 
 impl Component for Model {
     type Message = Msg;
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
+        Self { started: false }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {}
+        match msg {
+            Msg::StartGame => {
+                if self.started {
+                    return false;
+                }
+                self.started = true;
+                log::info!("Game is started");
+                true
+            }
+        }
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        let grid_props = GridProps {
-            width: 120,
-            height: 80,
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let grid_size = GridSize {
+            width: 100,
+            height: 100,
         };
 
+        let link = ctx.link();
+
         html! {
-            <Game started={false} grid={grid_props} />
+            <>
+                <Game started={self.started} grid_size={grid_size} />
+                <button onclick={link.callback(|_| Msg::StartGame)}>{format!("Start the game")}</button>
+                if self.started {
+                    <div>{format!("Game is started")}</div>
+                }
+
+            </>
         }
     }
 }
 
 fn main() {
+    wasm_logger::init(wasm_logger::Config::default());
     yew::start_app::<Model>();
 }

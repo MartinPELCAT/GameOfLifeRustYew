@@ -1,8 +1,10 @@
-use yew::{html,  Component, Context, Html, Properties};
+use yew::{html, Component, Context, Html, Properties};
+
+use super::universe::CellState;
 
 #[derive(PartialEq, Properties)]
 pub struct CellProps {
-    pub is_alive: bool,
+    pub state: CellState,
 }
 
 pub struct Cell;
@@ -22,10 +24,10 @@ impl Component for Cell {
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <div style={
-                if ctx.props().is_alive {
-                    "background-color: black; width: 10px; height: 10px;"
+                if ctx.props().state == CellState::Alive {
+                    "background-color: yellow; width: 4px; height: 4px;"
                 } else {
-                    "background-color: gray; width: 10px; height: 10px;"
+                    "background-color: gray; width: 4px; height: 4px;"
                 }
             } />
         }

@@ -1,16 +1,15 @@
+use super::{
+    cell::Cell,
+    universe::{CellState, Universe},
+};
 use yew::{html, Component, Context, Html, Properties};
-
-use super::cell::Cell;
 
 #[derive(PartialEq, Properties, Clone)]
 pub struct GridProps {
-    pub width: usize,
-    pub height: usize,
+    pub grid: Universe,
 }
 
-pub struct Grid {
-    grid: Vec<Vec<bool>>,
-}
+pub struct Grid {}
 
 impl Component for Grid {
     type Message = ();
@@ -21,32 +20,36 @@ impl Component for Grid {
     }
 
     fn create(ctx: &Context<Self>) -> Self {
-        // Create a grid of cells
-        let mut grid = Vec::new();
-        for _ in 0..ctx.props().height {
-            let mut row = Vec::new();
-            for _ in 0..ctx.props().width {
-                row.push(false);
-            }
-            grid.push(row);
-        }
-        Self { grid }
+        Self {}
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let grid = ctx.props().grid.cells.clone();
+        let width = usize::try_from(ctx.props().grid.width).unwrap();
+        let height = usize::try_from(ctx.props().grid.height).unwrap();
+
+        let mut rows: Vec<Vec<CellState>> = Vec::new();
+        for y in 0..height {
+            let mut row: Vec<CellState> = Vec::new();
+            for x in 0..width {
+                let cell = grid[y * width + x];
+                row.push(cell);
+            }
+            rows.push(row);
+        }
+
         html! {
-            {self.grid.iter().map(|row| {
+            rows.iter().map(|row| {
                 html! {
                     <div style={"display:flex;"}>
                         {row.iter().map(|cell| {
                             html! {
-                                <Cell is_alive={*cell} />
+                                <Cell state={*cell} />
                             }
                         }).collect::<Html>()}
                     </div>
                 }
             }).collect::<Html>()
-        }
         }
     }
 }
