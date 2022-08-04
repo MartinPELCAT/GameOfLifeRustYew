@@ -1,8 +1,9 @@
 use gloo_timers::callback::Interval;
 use yew::{html, Component, Context, Html, Properties};
 
+use crate::logic::universe::Universe;
+
 use super::grid::Grid;
-use super::universe::Universe;
 
 #[derive(PartialEq, Properties, Clone)]
 pub struct GridSize {
@@ -30,7 +31,7 @@ impl Component for Game {
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::NextStep => {
-                self.universe.tick();
+                self.universe.next_step();
                 true
             }
         }

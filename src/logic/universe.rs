@@ -34,7 +34,7 @@ impl Universe {
         count
     }
 
-    pub fn tick(&mut self) {
+    pub fn next_step(&mut self) {
         let mut next = self.cells.clone();
 
         for row in 0..self.height {
@@ -83,5 +83,20 @@ impl Universe {
             height,
             cells,
         }
+    }
+
+    pub fn get_grid(&self) -> Vec<Vec<CellState>> {
+        let mut rows: Vec<Vec<CellState>> = Vec::new();
+        let width = usize::try_from(self.width).unwrap();
+        let height = usize::try_from(self.height).unwrap();
+        for y in 0..height {
+            let mut row: Vec<CellState> = Vec::new();
+            for x in 0..width {
+                let cell = self.cells[y * width + x];
+                row.push(cell);
+            }
+            rows.push(row);
+        }
+        return rows;
     }
 }
