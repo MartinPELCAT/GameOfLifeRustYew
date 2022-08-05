@@ -8,7 +8,7 @@ pub struct CellProps {
 }
 
 #[function_component(Cell)]
-pub fn chat_container(props: &CellProps) -> Html {
+pub fn cell_component(props: &CellProps) -> Html {
     html! {
         <div style={
             if props.state == CellState::Alive {

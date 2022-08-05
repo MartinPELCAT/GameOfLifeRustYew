@@ -9,7 +9,7 @@ pub struct GridProps {
 }
 
 #[function_component(Grid)]
-pub fn chat_container(props: &GridProps) -> Html {
+pub fn grid_component(props: &GridProps) -> Html {
     let grid = props.grid.get_grid();
 
     html! {

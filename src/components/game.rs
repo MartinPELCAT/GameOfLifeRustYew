@@ -1,5 +1,7 @@
+use std::{borrow::Borrow, ops::Deref, rc::Rc};
+
 use gloo_timers::callback::Interval;
-use yew::{html, Component, Context, Html, Properties};
+use yew::{function_component, html, use_effect_with_deps, use_reducer, Properties, Reducible};
 
 use crate::logic::universe::Universe;
 
@@ -16,59 +18,76 @@ pub struct GameProps {
     pub started: bool,
     pub grid_size: GridSize,
 }
-pub struct Game {
-    pub universe: Universe,
+
+enum GameAction {
+    StartGame,
 }
 
-pub enum Msg {
-    NextStep,
+#[derive(Clone)]
+struct GameState {
+    universe: Universe,
 }
 
-impl Component for Game {
-    type Message = Msg;
-    type Properties = GameProps;
-
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::NextStep => {
-                self.universe.next_step();
-                true
-            }
+impl Default for GameState {
+    fn default() -> Self {
+        Self {
+            universe: Universe::new(100, 100),
         }
     }
+}
 
-    fn create(ctx: &Context<Self>) -> Self {
-        let universe = Universe::new(ctx.props().grid_size.width, ctx.props().grid_size.height);
+impl Reducible for GameState {
+    type Action = GameAction;
 
-        Self { universe }
-    }
-
-    fn changed(&mut self, ctx: &Context<Self>) -> bool {
-        let link = ctx.link().callback(|()| Msg::NextStep);
-
-        if ctx.props().started {
-            log::info!("started changed {}", ctx.props().started);
-            let interval = Interval::new(300, move || {
-                log::info!("next step");
-                link.emit(());
-            });
-
-            interval.forget();
+    fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
+        let next_universer: Universe = match action {
+            GameAction::StartGame => {
+                let mut universe = self.universe.clone();
+                universe.next_step();
+                universe
+            }
         };
 
-        false
+        Self {
+            universe: next_universer,
+        }
+        .into()
+    }
+}
+
+#[function_component(Game)]
+pub fn game_component(props: &GameProps) -> Html {
+    let universe_reducer = use_reducer(GameState::default);
+
+    let started = props.started;
+    let grid = universe_reducer.universe.borrow().deref().clone();
+
+    {
+        let universe = universe_reducer.clone();
+        use_effect_with_deps(
+            move |started| {
+                let mut interval: Option<Interval> = None;
+
+                if *started {
+                    let tmp = Interval::new(200, move || {
+                        universe.dispatch(GameAction::StartGame);
+                    });
+
+                    interval = Some(tmp);
+                };
+                || {
+                    if let Some(interval) = interval {
+                        interval.cancel();
+                    }
+                }
+            },
+            started,
+        );
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let link = ctx.link();
-
-        let onclick = link.callback(|_| Msg::NextStep);
-
-        html! {
-            <>
-                <Grid grid={self.universe.clone()} />
-                <button {onclick}>{ format!("Next step")}</button>
-            </>
-        }
+    html! {
+        <>
+            <Grid grid={grid} />
+        </>
     }
 }

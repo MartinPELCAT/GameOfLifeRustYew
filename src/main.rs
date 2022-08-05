@@ -45,7 +45,7 @@ impl Component for Model {
         html! {
             <>
                 <Game started={self.started} grid_size={grid_size} />
-                <button onclick={link.callback(|_| Msg::StartGame)}>{format!("Start the game")}</button>
+                <button onclick={link.callback(|_| Msg::StartGame)}>{"Start the game"}</button>
                 if self.started {
                     <div>{format!("Game is started")}</div>
                 }
