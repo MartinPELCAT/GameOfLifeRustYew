@@ -62,28 +62,25 @@ pub fn game_component(props: &GameProps) -> Html {
     let started = props.started;
     let grid = universe_reducer.universe.borrow().deref().clone();
 
-    {
-        let universe = universe_reducer.clone();
-        use_effect_with_deps(
-            move |started| {
-                let mut interval: Option<Interval> = None;
+    use_effect_with_deps(
+        move |started| {
+            let mut interval: Option<Interval> = None;
 
-                if *started {
-                    let tmp = Interval::new(200, move || {
-                        universe.dispatch(GameAction::StartGame);
-                    });
+            if *started {
+                let tmp = Interval::new(200, move || {
+                    universe_reducer.dispatch(GameAction::StartGame);
+                });
 
-                    interval = Some(tmp);
-                };
-                || {
-                    if let Some(interval) = interval {
-                        interval.cancel();
-                    }
+                interval = Some(tmp);
+            };
+            || {
+                if let Some(interval) = interval {
+                    interval.cancel();
                 }
-            },
-            started,
-        );
-    }
+            }
+        },
+        started,
+    );
 
     html! {
         <>

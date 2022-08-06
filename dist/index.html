@@ -1,52 +1,35 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
+<!DOCTYPE html><html><head>
+    <meta charset="utf-8">
     <title>Yew App</title>
+  
+<link rel="preload" href="/game_of_life_rust_yew-f3ec908c408d638f_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/game_of_life_rust_yew-f3ec908c408d638f.js"></head>
+<body>
+<script type="module">import init from '/game_of_life_rust_yew-f3ec908c408d638f.js';init('/game_of_life_rust_yew-f3ec908c408d638f_bg.wasm');</script><script>(function () {
+    var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    var url = protocol + '//' + window.location.host + '/_trunk/ws';
+    var poll_interval = 5000;
+    var reload_upon_connect = () => {
+        window.setTimeout(
+            () => {
+                // when we successfully reconnect, we'll force a
+                // reload (since we presumably lost connection to
+                // trunk due to it being killed, so it will have
+                // rebuilt on restart)
+                var ws = new WebSocket(url);
+                ws.onopen = () => window.location.reload();
+                ws.onclose = reload_upon_connect;
+            },
+            poll_interval);
+    };
 
-    <link
-      rel="preload"
-      href="/game_of_life_rust_yew-b751b81395a5a0ed_bg.wasm"
-      as="fetch"
-      type="application/wasm"
-      crossorigin=""
-    />
-    <link
-      rel="modulepreload"
-      href="/game_of_life_rust_yew-b751b81395a5a0ed.js"
-    />
-  </head>
-  <body>
-    <script type="module">
-      import init from "/game_of_life_rust_yew-b751b81395a5a0ed.js";
-      init("/game_of_life_rust_yew-b751b81395a5a0ed_bg.wasm");
-    </script>
-    <script>
-      (function () {
-        var protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        var url = protocol + "//" + window.location.host + "/_trunk/ws";
-        var poll_interval = 5000;
-        var reload_upon_connect = () => {
-          window.setTimeout(() => {
-            // when we successfully reconnect, we'll force a
-            // reload (since we presumably lost connection to
-            // trunk due to it being killed, so it will have
-            // rebuilt on restart)
-            var ws = new WebSocket(url);
-            ws.onopen = () => window.location.reload();
-            ws.onclose = reload_upon_connect;
-          }, poll_interval);
-        };
-
-        var ws = new WebSocket(url);
-        ws.onmessage = (ev) => {
-          const msg = JSON.parse(ev.data);
-          if (msg.reload) {
+    var ws = new WebSocket(url);
+    ws.onmessage = (ev) => {
+        const msg = JSON.parse(ev.data);
+        if (msg.reload) {
             window.location.reload();
-          }
-        };
-        ws.onclose = reload_upon_connect;
-      })();
-    </script>
-  </body>
-</html>
+        }
+    };
+    ws.onclose = reload_upon_connect;
+})()
+</script></body></html>
