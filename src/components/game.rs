@@ -7,7 +7,7 @@ use crate::logic::universe::Universe;
 
 use super::grid::Grid;
 
-#[derive(PartialEq, Properties, Clone)]
+#[derive(PartialEq, Properties, Clone, Copy)]
 pub struct GridSize {
     pub width: u32,
     pub height: u32,
@@ -28,10 +28,10 @@ struct GameState {
     universe: Universe,
 }
 
-impl Default for GameState {
-    fn default() -> Self {
+impl GameState {
+    fn init(width: u32, height: u32) -> Self {
         Self {
-            universe: Universe::new(100, 100),
+            universe: Universe::new(width, height),
         }
     }
 }
@@ -57,7 +57,8 @@ impl Reducible for GameState {
 
 #[function_component(Game)]
 pub fn game_component(props: &GameProps) -> Html {
-    let universe_reducer = use_reducer(GameState::default);
+    let universe_reducer =
+        use_reducer(|| GameState::init(props.grid_size.width, props.grid_size.height));
 
     let started = props.started;
     let grid = universe_reducer.universe.borrow().deref().clone();

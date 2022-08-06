@@ -44,19 +44,10 @@ impl Universe {
                 let live_neighbors = self.live_neighbor_count(row, col);
 
                 let next_cell = match (cell, live_neighbors) {
-                    // Rule 1: Any live cell with fewer than two live neighbours
-                    // dies, as if caused by underpopulation.
                     (CellState::Alive, x) if x < 2 => CellState::Dead,
-                    // Rule 2: Any live cell with two or three live neighbours
-                    // lives on to the next generation.
                     (CellState::Alive, 2) | (CellState::Alive, 3) => CellState::Alive,
-                    // Rule 3: Any live cell with more than three live
-                    // neighbours dies, as if by overpopulation.
                     (CellState::Alive, x) if x > 3 => CellState::Dead,
-                    // Rule 4: Any dead cell with exactly three live neighbours
-                    // becomes a live cell, as if by reproduction.
                     (CellState::Dead, 3) => CellState::Alive,
-                    // All other cells remain in the same state.
                     (otherwise, _) => otherwise,
                 };
 

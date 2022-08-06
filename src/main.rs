@@ -5,53 +5,27 @@ use components::game::{Game, GridSize};
 
 use yew::prelude::*;
 
-enum Msg {
-    StartGame,
-}
+#[function_component(Model)]
+pub fn game_component() -> Html {
+    let grid_size = use_state(|| GridSize {
+        width: 100,
+        height: 100,
+    });
 
-struct Model {
-    started: bool,
-}
+    let started = use_state(|| false);
 
-impl Component for Model {
-    type Message = Msg;
-    type Properties = ();
+    let on_start_click = {
+        let started = started.clone();
+        Callback::from(move |_| {
+            started.set(true);
+        })
+    };
 
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self { started: false }
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::StartGame => {
-                if self.started {
-                    return false;
-                }
-                self.started = true;
-                log::info!("Game is started");
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let grid_size = GridSize {
-            width: 100,
-            height: 100,
-        };
-
-        let link = ctx.link();
-
-        html! {
-            <>
-                <Game started={self.started} grid_size={grid_size} />
-                <button onclick={link.callback(|_| Msg::StartGame)}>{"Start the game"}</button>
-                if self.started {
-                    <div>{format!("Game is started")}</div>
-                }
-
-            </>
-        }
+    html! {
+        <>
+            <Game started={*started} grid_size={*grid_size} />
+            <button onclick={on_start_click}>{"Start the game"}</button>
+        </>
     }
 }
 

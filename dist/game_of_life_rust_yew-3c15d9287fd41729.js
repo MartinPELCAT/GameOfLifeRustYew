@@ -537,12 +537,12 @@ function getImports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper66 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper67 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 7, __wbg_adapter_20);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper2094 = function(arg0, arg1, arg2) {
-        const ret = makeClosure(arg0, arg1, 248, __wbg_adapter_23);
+    imports.wbg.__wbindgen_closure_wrapper2375 = function(arg0, arg1, arg2) {
+        const ret = makeClosure(arg0, arg1, 269, __wbg_adapter_23);
         return addHeapObject(ret);
     };
 
@@ -578,7 +578,7 @@ function initSync(bytes) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('game_of_life_rust_yew-f3ec908c408d638f_bg.wasm', import.meta.url);
+        input = new URL('game_of_life_rust_yew-3c15d9287fd41729_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
