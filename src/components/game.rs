@@ -68,7 +68,7 @@ pub fn game_component(props: &GameProps) -> Html {
             let mut interval: Option<Interval> = None;
 
             if *started {
-                let tmp = Interval::new(200, move || {
+                let tmp = Interval::new(100, move || {
                     universe_reducer.dispatch(GameAction::StartGame);
                 });
 

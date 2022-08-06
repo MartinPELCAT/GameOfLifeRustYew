@@ -1,3 +1,5 @@
+use rand::Rng;
+
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CellState {
@@ -60,8 +62,9 @@ impl Universe {
 
     pub fn new(width: u32, height: u32) -> Universe {
         let cells = (0..width * height)
-            .map(|i| {
-                if i % 2 == 0 || i % 7 == 0 {
+            .map(|_| {
+                let rand_num = rand::thread_rng().gen_range(0, 4);
+                if rand_num == 0 {
                     CellState::Alive
                 } else {
                     CellState::Dead
