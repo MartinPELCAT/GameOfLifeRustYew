@@ -2,7 +2,6 @@ pub mod components;
 pub mod logic;
 
 use components::game::{Game, GridSize};
-
 use yew::prelude::*;
 
 #[function_component(Model)]
